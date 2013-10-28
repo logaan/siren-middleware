@@ -1,6 +1,7 @@
 (ns siren-middleware
   (:require [clojure.pprint :refer [pprint]]
-            [clojure.string :refer [split]]
+            [clojure.string :refer [join split]]
+            [hiccup.core :as hiccup]
             [compojure
              [core :refer :all]
              [handler :as handler]
@@ -63,8 +64,30 @@
 (defmulti render-siren (comp second list))
 
 (defmethod render-siren "json" [response type]
-  (-> response
-      (update-in [:body] json/generate-string)))
+  (update-in response [:body] json/generate-string))
+
+(defn render-property [[k v]]
+  [[:dt k] [:dd v]])
+
+(defn render-link [{:keys [rel href]}]
+  (let [str-rel (join " " rel)]
+    [:li [:a {:href href :rel str-rel} str-rel]]))
+
+(defn generate-html [{:keys [class properties entities actions links]}]
+  (hiccup/html
+    [:body
+     [:h1 (join " " class)]
+     [:h2 "Properties"]
+     [:dl (mapcat render-property properties)]
+     [:h2 "Entities"]
+     [:p "Entities go here. In a form that supports nesting."]
+     [:h2 "Links"]
+     [:ul (map render-link links)]
+     [:h2 "Actions"]
+     [:p "Forms go here."]])) 
+
+(defmethod render-siren "html" [response type]
+  (update-in response [:body] generate-html))
 
 (defn siren-converter [handler]
   (fn [request]
