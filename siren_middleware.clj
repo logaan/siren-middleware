@@ -8,7 +8,8 @@
              [route :as route]]
             [cheshire.core :as json]
             [org.httpkit.server :as httpkit]
-            [midje.sweet :refer :all]))
+            [midje.sweet :refer :all])
+  (:import [java.io ByteArrayInputStream]))
 
 (def siren-response
   {:class ["order"]
@@ -65,6 +66,9 @@
 
 (defmethod render-siren "json" [response type]
   (update-in response [:body] json/generate-string))
+
+(defmethod render-siren "smile" [response type]
+  (update-in response [:body] (fn [body] (ByteArrayInputStream. (json/generate-smile body)))))
 
 (defn render-property [[k v]]
   [[:dt k] [:dd v]])
