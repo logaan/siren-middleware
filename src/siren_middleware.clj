@@ -56,4 +56,8 @@
 (defn -main [& arguments]
   (start-server 8080))
 
-
+(comment
+  
+  (def server (-main))
+  
+  )
