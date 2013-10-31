@@ -13,6 +13,10 @@
 
 ;------------------------------------------------------------------------------
 
+; This is a circular dependency but it seems appropriate given the recursive
+; nature of the rendering.
+(def render-entity)
+
 ; Should do something with the rel of the embedded-representation
 (defn render-embedded-representation [entity]
   (render-entity entity))
