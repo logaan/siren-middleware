@@ -1,0 +1,16 @@
+(ns siren
+  (:require [clojure.string :refer [split]]
+            [hiccup.core :as hiccup]
+            [cheshire.core :as json]))
+
+(defmulti render-siren (comp second list))
+
+(defn siren-converter [handler]
+  (fn [request]
+    (let [accept     (get-in request [:headers "accept"])
+          upper-type (last (split accept #"\+"))]
+      (-> (handler request)
+          (render-siren upper-type)
+          (assoc-in [:headers "Content-Type"]
+                    (str "application/vnd.siren+" accept))))))
+
