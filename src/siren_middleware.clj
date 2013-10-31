@@ -1,14 +1,13 @@
 (ns siren-middleware
-  (:require [clojure.string :refer [join split]]
-            [hiccup.core :as hiccup]
-            [compojure
-             [core :refer :all]
-             [handler :as handler]
-             [route :as route]]
-            [cheshire.core :as json]
-            [org.httpkit.server :as httpkit]
-            [logger :refer :all])
-  (:import [java.io ByteArrayInputStream]))
+  (:require
+    [org.httpkit.server :as httpkit]
+    [compojure
+     [core :refer :all]
+     [handler :as handler]
+     [route :as route]]
+    [siren :refer :all]
+    [content-types html json smile]
+    [logger :refer :all]))
 
 (def siren-response
   {:class ["order"]
@@ -38,8 +37,8 @@
 
 (defroutes all-routes
   (GET "/" []
-    {:status 200
-     :body siren-response})
+       {:status 200
+        :body siren-response})
   (route/not-found
     "<h1>Page not found</h1>"))
 

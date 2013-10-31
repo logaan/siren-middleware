@@ -1,7 +1,5 @@
 (ns siren
-  (:require [clojure.string :refer [split]]
-            [hiccup.core :as hiccup]
-            [cheshire.core :as json]))
+  (:require [clojure.string :refer [split]]))
 
 (defmulti render-siren (comp second list))
 
